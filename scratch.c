@@ -132,3 +132,18 @@ void *qmlScratchRealloc(qmlScratch *scratch, void *ptr, size_t size) {
   }
   return area->ptr;
 }
+
+/* global scratch area used for shorthand functions */
+static qmlScratch gScratch;
+
+void qmlScratchInitGlobal(uint8_t *data, size_t size, qmlScratchArea *areas, size_t area_max) {
+  gScratch = qmlScratchInit(data, size, areas, area_max);
+}
+
+void *qmlScratchAllocGlobal(size_t size) {
+  return qmlScratchAlloc(&gScratch, size);
+}
+
+void *qmlScratchReallocGlobal(void *ptr, size_t size) {
+  return qmlScratchRealloc(&gScratch, ptr, size);
+}

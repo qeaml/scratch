@@ -64,6 +64,39 @@ QML_SCRATCH_API void *qmlScratchAlloc(qmlScratch *scratch, size_t size);
  */
 QML_SCRATCH_API void *qmlScratchRealloc(qmlScratch *scratch, void *ptr, size_t size);
 
+/**
+ * @brief Initialize a global scratch-space.
+ *
+ * This is a shorthand for `qmlScratchInit` that uses a global scratch-space.
+ * Most useful if you have only one scratch-space in your program and you don't
+ * want to pass it around everywhere.
+ *
+ * @param data Data buffer
+ * @param size Size of data buffer
+ * @param areas Allocation area buffer
+ * @param area_max Maximum number of areas at once
+ * @sa qmlScratchInit
+ */
+QML_SCRATCH_API void qmlScratchInitGlobal(uint8_t *data, size_t size, qmlScratchArea *areas, size_t area_max);
+
+/**
+ * @brief Allocate memory from the global scratch-space.
+ *
+ * @param size Size of memory
+ * @return void* Pointer to the allocated memory
+ * @sa qmlScratchAlloc
+ */
+QML_SCRATCH_API void *qmlScratchAllocGlobal(size_t size);
+
+/**
+ * @brief Reallocate memory in the global scratch-space.
+ *
+ * @param ptr Pointer to previous global scratch-space allocation
+ * @param size Size to reallocate to
+ * @return void* Pointer to the modified memory
+ */
+QML_SCRATCH_API void *qmlScratchReallocGlobal(void *ptr, size_t size);
+
 #ifdef __cplusplus
 }
 #endif

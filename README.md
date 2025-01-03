@@ -34,4 +34,7 @@ effectively just a fancier name for a memory arena. You can see the gist of how
 to use a scratch space in the [`test.c`](test.c) file. It's also worth it to
 give [`scratch.h`](scratch.h) a read.
 
+Note that Scratch is not designed to be MT-safe. Use the global scratch-space
+with caution.
+
 [nwge]: https://qeaml.github.io/nwge-docs/INTRO
