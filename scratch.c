@@ -52,19 +52,26 @@ void *qmlScratchAlloc(qmlScratch *scratch, size_t size) {
 /**
  * @brief Get the area by pointer.
  *
+ * This find the `qmlScratchArea` that starts at the given pointer. If the
+ * pointer is not the start of an area, then `NULL` is returned.
+ *
  * @param scratch Scratch-space
  * @param ptr Pointer
  * @return qmlScratchArea* Area starting at the pointer or NULL
  */
 static qmlScratchArea *findArea(qmlScratch *scratch, uint8_t *ptr) {
-  /* TODO: replace with binary search */
-  for(size_t i = 0; i < scratch->areaCount; ++i) {
-    qmlScratchArea *area = &scratch->areas[i];
+  size_t min = 0;
+  size_t max = scratch->areaCount;
+  while(min < max) {
+    size_t mid = (min + max) / 2;
+    qmlScratchArea *area = &scratch->areas[mid];
     if(area->ptr == ptr) {
       return area;
     }
-    if(area->ptr > ptr) {
-      return NULL;
+    if(area->ptr < ptr) {
+      min = mid + 1;
+    } else {
+      max = mid;
     }
   }
   return NULL;
