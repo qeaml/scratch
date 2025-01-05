@@ -92,35 +92,6 @@ static int canExpandInPlace(qmlScratch *scratch, qmlScratchArea *area, size_t si
   return area == lastArea && expandedAreaEnd < scratchEnd;
 }
 
-/**
- * @brief Prepare an area for reallocation.
- *
- * This will ensure the returned area is the given size. If reallocating
- * in-place, then the area will be resized. Otherwise, a new area will be
- * allocated.
- *
- * @param scratch Scratch-space
- * @param ptr Pointer we want to reallocate
- * @param size Size to reallocate to
- * @param oldSize Previous size of the area, may be larger than `size`!
- * @return qmlScratchArea* Reallocated area
- */
-static qmlScratchArea *prepForRealloc(qmlScratch *scratch, uint8_t *ptr, size_t size, size_t *oldSize) {
-  qmlScratchArea *area = findArea(scratch, ptr);
-  if(area == NULL) {
-    return NULL;
-  }
-  *oldSize = area->size;
-  if(area->size >= size) {
-    return area;
-  }
-  if(canExpandInPlace(scratch, area, size)) {
-    area->size = size;
-    return area;
-  }
-  return addArea(scratch, size);
-}
-
 void *qmlScratchRealloc(qmlScratch *scratch, void *ptr, size_t size) {
   qmlScratchArea *area = findArea(scratch, ptr);
   if(area == NULL) {
