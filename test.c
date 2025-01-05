@@ -44,6 +44,8 @@ void localScratchSpace() {
   str = qmlScratchRealloc(&scratch, str, 3);
   str[2] = '\0';
   printf("Reallocated 1: %s\n", str);
+
+  printf("Areas: %zu\n", scratch.areaCount);
 }
 
 static uint8_t gData[SCRATCH_SIZE];

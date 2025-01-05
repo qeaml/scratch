@@ -122,15 +122,22 @@ static qmlScratchArea *prepForRealloc(qmlScratch *scratch, uint8_t *ptr, size_t 
 }
 
 void *qmlScratchRealloc(qmlScratch *scratch, void *ptr, size_t size) {
-  size_t oldSize = 0;
-  qmlScratchArea *area = prepForRealloc(scratch, ptr, size, &oldSize);
+  qmlScratchArea *area = findArea(scratch, ptr);
   if(area == NULL) {
     return NULL;
   }
-  for(size_t i = 0; i < oldSize; ++i) {
-    area->ptr[i] = ((uint8_t*)ptr)[i];
+  if(area->size >= size) {
+    return area->ptr;
   }
-  return area->ptr;
+  if(canExpandInPlace(scratch, area, size)) {
+    area->size = size;
+    return area->ptr;
+  }
+  qmlScratchArea *newArea = addArea(scratch, size);
+  for(size_t i = 0; i < area->size; ++i) {
+    newArea->ptr[i] = area->ptr[i];
+  }
+  return newArea->ptr;
 }
 
 /* global scratch area used for shorthand functions */
