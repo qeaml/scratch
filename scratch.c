@@ -60,6 +60,9 @@ void *qmlScratchAlloc(qmlScratch *scratch, size_t size) {
  * @return qmlScratchArea* Area starting at the pointer or NULL
  */
 static qmlScratchArea *findArea(qmlScratch *scratch, uint8_t *ptr) {
+  if(ptr < scratch->data || ptr >= scratch->data + scratch->size) {
+    return NULL;
+  }
   size_t min = 0;
   size_t max = scratch->areaCount;
   while(min < max) {
