@@ -91,9 +91,23 @@ void globalScratchSpace() {
   printf("Reallocated 1: %s\n", str);
 }
 
+void overflow() {
+  uint8_t data[SCRATCH_SIZE];
+  qmlScratchArea areas[AREA_MAX];
+  qmlScratch scratch = qmlScratchInit(data, SCRATCH_SIZE, areas, AREA_MAX);
+
+  for(int i = 1; i < 15; ++i) {
+    void *ptr = qmlScratchAlloc(&scratch, i * 10);
+  }
+
+  printf("Areas: %zu\n", scratch.areaCount);
+}
+
 int main(int argc, char **argv) {
   printf("Local scratch space:\n");
   localScratchSpace();
   printf("\nGlobal scratch space:\n");
   globalScratchSpace();
+  printf("\nData overflow:\n");
+  overflow();
 }
