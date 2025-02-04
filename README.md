@@ -1,7 +1,6 @@
 # Scratch
 
-`qmlScratch`: Simple scratch-space allocator, similar in implementation to the
-one used by [nwge]. (There are plans to use this exact library in nwge)
+A simple scratch-space allocator, used by the [nwge] engine.
 
 ## Install
 
@@ -28,7 +27,7 @@ one used by [nwge]. (There are plans to use this exact library in nwge)
 
 ## Usage
 
-Using a scratch-space is simple. You provide it with some buffer to use and
+Using a scratch-space is simple. You provide it with a buffer to use and
 it'll let you allocate and reallocate memory within it. Scratch-space is
 effectively just a fancier name for a memory arena. You can see the gist of how
 to use a scratch space in the [`test.c`](test.c) file. It's also worth it to
