@@ -1,7 +1,7 @@
 /*
 scratch.h
 ---------
-The Scratch-Space, v1.0
+The Scratch-Space
 */
 
 #ifndef QML_SCRATCH_H_
@@ -40,7 +40,8 @@ typedef struct qmlScratchS {
  * @param area_max Maximum number of areas at once
  * @return qmlScratch A scratch-space
  */
-QML_SCRATCH_API qmlScratch qmlScratchInit(uint8_t *data, size_t size, qmlScratchArea *areas, size_t area_max);
+QML_SCRATCH_API
+qmlScratch qmlScratchInit(uint8_t *data, size_t size, qmlScratchArea *areas, size_t area_max);
 
 /**
  * @brief Allocate memory from a scratch-space.
@@ -49,7 +50,8 @@ QML_SCRATCH_API qmlScratch qmlScratchInit(uint8_t *data, size_t size, qmlScratch
  * @param size Size of allocation
  * @return void* Pointer to allocated memory
  */
-QML_SCRATCH_API void *qmlScratchAlloc(qmlScratch *scratch, size_t size);
+QML_SCRATCH_API
+void *qmlScratchAlloc(qmlScratch *scratch, size_t size);
 
 /**
  * @brief Reallocate memory in a scratch-space.
@@ -62,7 +64,8 @@ QML_SCRATCH_API void *qmlScratchAlloc(qmlScratch *scratch, size_t size);
  * @param size Size to reallocate to
  * @return void* Pointer to the modified memory
  */
-QML_SCRATCH_API void *qmlScratchRealloc(qmlScratch *scratch, void *ptr, size_t size);
+QML_SCRATCH_API
+void *qmlScratchRealloc(qmlScratch *scratch, void *ptr, size_t size);
 
 /**
  * @brief Initialize a global scratch-space.
@@ -77,7 +80,8 @@ QML_SCRATCH_API void *qmlScratchRealloc(qmlScratch *scratch, void *ptr, size_t s
  * @param area_max Maximum number of areas at once
  * @sa qmlScratchInit
  */
-QML_SCRATCH_API void qmlScratchInitGlobal(uint8_t *data, size_t size, qmlScratchArea *areas, size_t area_max);
+QML_SCRATCH_API
+void qmlScratchInitGlobal(uint8_t *data, size_t size, qmlScratchArea *areas, size_t area_max);
 
 /**
  * @brief Allocate memory from the global scratch-space.
@@ -86,7 +90,8 @@ QML_SCRATCH_API void qmlScratchInitGlobal(uint8_t *data, size_t size, qmlScratch
  * @return void* Pointer to the allocated memory
  * @sa qmlScratchAlloc
  */
-QML_SCRATCH_API void *qmlScratchAllocGlobal(size_t size);
+QML_SCRATCH_API
+void *qmlScratchAllocGlobal(size_t size);
 
 /**
  * @brief Reallocate memory in the global scratch-space.
@@ -95,7 +100,8 @@ QML_SCRATCH_API void *qmlScratchAllocGlobal(size_t size);
  * @param size Size to reallocate to
  * @return void* Pointer to the modified memory
  */
-QML_SCRATCH_API void *qmlScratchReallocGlobal(void *ptr, size_t size);
+QML_SCRATCH_API
+void *qmlScratchReallocGlobal(void *ptr, size_t size);
 
 #ifdef __cplusplus
 }

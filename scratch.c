@@ -1,5 +1,3 @@
-/* Scratch-Space, v1.0 */
-
 #include "scratch.h"
 
 qmlScratch qmlScratchInit(uint8_t *data, size_t size, qmlScratchArea *areas, size_t area_max) {
@@ -20,7 +18,11 @@ qmlScratch qmlScratchInit(uint8_t *data, size_t size, qmlScratchArea *areas, siz
  * @return qmlScratchArea* Pointer to the new area
  */
 static qmlScratchArea *addArea(qmlScratch *scratch, size_t size) {
-  if(scratch->areaCount == 0 || scratch->areaCount == scratch->areaMax) {
+  if(scratch->areaCount == 0 || scratch->areaCount >= scratch->areaMax) {
+    if(size > scratch->size) {
+      scratch->areaCount = 0;
+      return NULL;
+    }
     scratch->areas[0].ptr = scratch->data;
     scratch->areas[0].size = size;
     scratch->areaCount = 1;
@@ -31,6 +33,10 @@ static qmlScratchArea *addArea(qmlScratch *scratch, size_t size) {
   uint8_t *prevEnd = prevArea->ptr + prevArea->size;
   uint8_t *scratchEnd = scratch->data + scratch->size;
   if(prevEnd + size > scratchEnd) {
+    if(size > scratch->size) {
+      scratch->areaCount = 0;
+      return NULL;
+    }
     scratch->areas[0].ptr = scratch->data;
     scratch->areas[0].size = size;
     scratch->areaCount = 1;
@@ -40,7 +46,7 @@ static qmlScratchArea *addArea(qmlScratch *scratch, size_t size) {
   qmlScratchArea *area = &scratch->areas[scratch->areaCount];
   area->ptr = prevEnd;
   area->size = size;
-  scratch->areaCount++;
+  ++scratch->areaCount;
   return area;
 }
 
@@ -52,7 +58,7 @@ void *qmlScratchAlloc(qmlScratch *scratch, size_t size) {
 /**
  * @brief Get the area by pointer.
  *
- * This find the `qmlScratchArea` that starts at the given pointer. If the
+ * This finds the `qmlScratchArea` that starts at the given pointer. If the
  * pointer is not the start of an area, then `NULL` is returned.
  *
  * @param scratch Scratch-space
@@ -60,9 +66,6 @@ void *qmlScratchAlloc(qmlScratch *scratch, size_t size) {
  * @return qmlScratchArea* Area starting at the pointer or NULL
  */
 static qmlScratchArea *findArea(qmlScratch *scratch, uint8_t *ptr) {
-  if(ptr < scratch->data || ptr >= scratch->data + scratch->size) {
-    return NULL;
-  }
   size_t min = 0;
   size_t max = scratch->areaCount;
   while(min < max) {
@@ -108,6 +111,9 @@ void *qmlScratchRealloc(qmlScratch *scratch, void *ptr, size_t size) {
     return area->ptr;
   }
   qmlScratchArea *newArea = addArea(scratch, size);
+  if(newArea == NULL) {
+    return NULL;
+  }
   for(size_t i = 0; i < area->size; ++i) {
     newArea->ptr[i] = area->ptr[i];
   }
