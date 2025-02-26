@@ -1,6 +1,7 @@
 #include "scratch.h"
 #include <assert.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #define SCRATCH_SIZE 1024
 #define AREA_MAX 10
@@ -107,6 +108,48 @@ void overflow() {
   printf("Areas: %zu\n", scratch.areaCount);
 }
 
+#define BIG_SIZE 10240
+#define MANY_AREAS 256
+#define POINTERS 256
+
+void benchmark() {
+  uint8_t data[BIG_SIZE];
+  qmlScratchArea areas[MANY_AREAS];
+  void *pointers[POINTERS];
+  size_t sizes[POINTERS];
+  qmlScratch scratch = qmlScratchInit(data, BIG_SIZE, areas, MANY_AREAS);
+
+  for(int i = 0; i < POINTERS; ++i) {
+    sizes[i] = 10 + i;
+    pointers[i] = qmlScratchAlloc(&scratch, sizes[i]);
+  }
+  for(int j = 0; j < POINTERS*20; ++j) {
+    for(int i = 0; i < POINTERS; ++i) {
+      sizes[i] += 2;
+      pointers[i] = qmlScratchRealloc(&scratch, pointers[i], sizes[i]);
+    }
+  }
+}
+
+void benchmarkMalloc() {
+  void *pointers[POINTERS];
+  size_t sizes[POINTERS];
+
+  for(int i = 0; i < POINTERS; ++i) {
+    sizes[i] = 10 + i;
+    pointers[i] = malloc(sizes[i]);
+  }
+  for(int j = 0; j < POINTERS*20; ++j) {
+    for(int i = 0; i < POINTERS; ++i) {
+      sizes[i] += 2;
+      pointers[i] = realloc(pointers[i], sizes[i]);
+    }
+  }
+  for(int i = 0; i < POINTERS; ++i) {
+    free(pointers[i]);
+  }
+}
+
 #ifdef __linux__
 
 #include <sys/mman.h>
@@ -141,6 +184,15 @@ void memoryPage() {
 #endif
 
 int main(int argc, char **argv) {
+  if(argc >= 2 && argv[1][0] == 'b') {
+    if(argc >= 3 && argv[2][0] == 'm') {
+      benchmarkMalloc();
+    } else {
+      benchmark();
+    }
+    return 0;
+  }
+
   printf("Local scratch space:\n");
   localScratchSpace();
   printf("\nGlobal scratch space:\n");
